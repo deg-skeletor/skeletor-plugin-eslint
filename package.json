@@ -1,0 +1,37 @@
+{
+    "name": "@deg-skeletor/plugin-eslint",
+    "version": "1.0.0",
+    "description": "A Skeletor plugin to lint JavaScript files with ESlint",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest",
+        "lint": "eslint index.js"
+    },
+    "author": {
+        "name": "Aaron Ladage",
+        "email": "aladage@gmail.com"
+    },
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/deg-skeletor/skeletor-plugin-eslint.git"
+    },
+    "peerDependencies": {
+        "@deg-skeletor/core": "^1.1.1"
+    },
+    "dependencies": {
+        "eslint": "^6.1.0"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "jest": "^24.8.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "skeletor",
+        "skeletor-plugin",
+        "eslint"
+    ]
+}
