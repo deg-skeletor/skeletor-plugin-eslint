@@ -1,3 +1,4 @@
+const path = require('path');
 const {CLIEngine} = require('eslint');
 
 const cliDefaults = {
@@ -16,9 +17,9 @@ const messages = {
 	noSourceFiles: 'No source files found.'
 };
 
-const run = (config, {logger}) => {
+const run = (config, {logger, source}) => {
 	const settings = getSettings(config);
-	const sourceFiles = ensureArray(settings.source);
+	const sourceFiles = getSourceFiles(source, settings.source);
 	if (sourceFiles.length === 0) {
 		logger.error(messages.noSourceFiles);
 		return Promise.resolve({
@@ -59,6 +60,11 @@ const handleReportErrors = (formatter, logger, report) => {
 const handleReportNoErrors = () => ({
 	status: statuses.complete
 });
+
+const getSourceFiles = (source = null, sourceFiles = []) => {
+	const sourcePathToUse = source && source.filepath ? source.filepath : sourceFiles;
+	return ensureArray(sourcePathToUse).map(singlePath => path.resolve(process.cwd(), singlePath));
+};
 
 const ensureArray = obj => Array.isArray(obj) === false ? [obj] : obj;
 
