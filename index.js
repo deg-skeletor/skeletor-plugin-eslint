@@ -1,21 +1,7 @@
 const path = require('path');
 const {CLIEngine} = require('eslint');
-
-const cliDefaults = {
-	fix: true,
-	cache: true
-};
-const pluginDefaults = {
-	formatter: 'codeframe',
-	source: []
-};
-const statuses = {
-	error: 'error',
-	complete: 'complete'
-};
-const messages = {
-	noSourceFiles: 'No source files found.'
-};
+const {filterObjectProps, ensureArray} = require('./utils/objectUtils');
+const {cliDefaults, pluginDefaults, statuses, messages} = require('./config/defaults');
 
 const run = (config, {logger, source}) => {
 	const settings = getSettings(config);
@@ -29,8 +15,7 @@ const run = (config, {logger, source}) => {
 	}
 	const cli = initCli(settings);
 	const formatter = initFormatter(cli, settings.formatter);
-	const report = getLintingReport(cli, sourceFiles);
-
+	const report = getLintingReport(cli, logger, sourceFiles);
 	return Promise.resolve(reportHasErrors(report) ?
 		handleReportErrors(formatter, logger, report) :
 		handleReportNoErrors());
@@ -46,7 +31,14 @@ const initCli = settings => new CLIEngine(filterObjectProps(settings, Object.key
 
 const initFormatter = (cli, formatter) => cli.getFormatter(formatter);
 
-const getLintingReport = (cli, sourceFiles) => cli.executeOnFiles(sourceFiles);
+const getLintingReport = (cli, logger, sourceFiles) => {
+	try {
+		return cli.executeOnFiles(sourceFiles);
+	} catch(err) {
+		logger.error(messages.noSourceFiles);
+		return null;
+	}
+};
 
 const reportHasErrors = (report = null) => report && report.errorCount && report.errorCount > 0;
 
@@ -64,19 +56,6 @@ const handleReportNoErrors = () => ({
 const getSourceFiles = (source = null, sourceFiles = []) => {
 	const sourcePathToUse = source && source.filepath ? source.filepath : sourceFiles;
 	return ensureArray(sourcePathToUse).map(singlePath => path.resolve(process.cwd(), singlePath));
-};
-
-const ensureArray = obj => Array.isArray(obj) === false ? [obj] : obj;
-
-const filterObjectProps = (obj, propsToRemove = [], returnKept = true) => {
-	propsToRemove = ensureArray(propsToRemove);
-	return propsToRemove.reduce((reducedObj, propToRemove) => {
-		const {
-			[propToRemove]: removedProps,
-			...keptProps
-		} = reducedObj;
-		return returnKept === true ? keptProps : removedProps;
-	}, obj);
 };
 
 module.exports = skeletorEslint = () => ({
