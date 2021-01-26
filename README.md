@@ -1,7 +1,8 @@
 # Skeletor ESLint Plugin
-[![Build Status](https://travis-ci.org/deg-skeletor/skeletor-plugin-eslint.svg?branch=master)](https://travis-ci.org/deg-skeletor/skeletor-plugin-eslint)
 
 The purpose of this plugin is to lint a project's JavaScript using [ESLint](https://eslint.org/). This plugin is part of the Skeletor ecosystem. To learn more about Skeletor, [go here](https://github.com/deg-skeletor/skeletor-core).
+
+**THIS REPOSITORY IS NO LONGER MAINTAINED**
 
 ## Installation
 Install this plugin into your Skeletor-equipped project via the following terminal command: 
